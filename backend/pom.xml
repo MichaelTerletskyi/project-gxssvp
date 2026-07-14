@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -12,6 +13,7 @@
     <groupId>com.gxssvp</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>GXSSVP Backend Service</name>
     <description>The entry point of backend for the GXSSVP social media platform</description>
     <url>https://github.com/MichaelTerletskyi/project-gxssvp</url>
@@ -36,6 +38,10 @@
         </developer>
     </developers>
 
+    <modules>
+        <module>application</module>
+    </modules>
+
     <scm>
         <connection/>
         <developerConnection/>
@@ -45,6 +51,8 @@
 
     <properties>
         <java.version>25</java.version>
+        <checkstyle.config.location>${maven.multiModuleProjectDirectory}/checkstyle/google_checks.xml
+        </checkstyle.config.location>
     </properties>
 
     <dependencies>
@@ -145,8 +153,37 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>13.7.0</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${checkstyle.config.location}</configLocation>
+                    <violationSeverity>warning</violationSeverity>
+                    <failsOnError>true</failsOnError>
+                    <consoleOutput>true</consoleOutput>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
     <repositories>
         <repository>
             <id>spring-snapshots</id>
