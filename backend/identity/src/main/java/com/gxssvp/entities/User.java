@@ -48,9 +48,11 @@ public class User {
     @Setter(AccessLevel.NONE)
     private UUID id;
 
+    @EqualsAndHashCode.Include
     @Column(unique = true, nullable = false)
     private String username;
 
+    @EqualsAndHashCode.Include
     @Column(unique = true, nullable = false)
     private String email;
 
