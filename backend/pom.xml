@@ -40,6 +40,7 @@
     <modules>
         <module>application</module>
         <module>identity</module>
+        <module>security</module>
     </modules>
 
     <scm>
@@ -51,6 +52,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <jakarta.validation.version>4.0.0-M1</jakarta.validation.version>
         <checkstyle.config.location>${maven.multiModuleProjectDirectory}/checkstyle/google_checks.xml
         </checkstyle.config.location>
     </properties>
@@ -62,13 +64,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -91,14 +88,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security-test</artifactId>
-            <scope>test</scope>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc-test</artifactId>
-            <scope>test</scope>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
     </dependencies>
 
