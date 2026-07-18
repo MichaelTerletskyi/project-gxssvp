@@ -1,3 +1,5 @@
+export type Role = 'USER' | 'MODERATOR';
+
 export interface RegisterRequest {
     username: string;
     email: string;
@@ -13,10 +15,10 @@ export interface AuthResponse {
     accessToken: string;
     refreshToken: string;
     type: string;
-    id: number;
+    id: string;
     username: string;
     email: string;
-    role: string;
+    role: Role;
 }
 
 export interface RefreshTokenRequest {
@@ -30,10 +32,10 @@ export interface RefreshTokenResponse {
 }
 
 export interface UserResponse {
-    id: number;
+    id: string;
     username: string;
     email: string;
-    role: string;
+    role: Role;
     enabled: boolean;
     createdAt: string;
 }
