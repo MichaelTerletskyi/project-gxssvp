@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
-import { useLogin } from '../hooks/useAuth';
-import type { LoginRequest } from '../api/auth.types.ts';
+import { useLogin } from '../../hooks/useAuth.ts';
+import type { LoginRequest } from '../../api/auth.types.ts';
+import '../login/Login.module.css'
 
 type FieldErrors = Partial<Record<keyof LoginRequest, string>>;
 
@@ -55,7 +56,7 @@ export function LoginPage() {
     };
 
     return (
-        <div className="auth-page">
+        <div className="login-page">
             <h1>Sign in</h1>
             <form onSubmit={onSubmit} noValidate>
                 <label>
