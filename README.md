@@ -38,4 +38,11 @@ Launch the entire development stack with Docker Compose:
 docker compose up -d
 ```
 
+## 🌐 Pages
+
+```yaml
+Sign in
+```
+![Header Image](pages/Sign%20in%20page.png)
+
 > 🚧 **Status:** This project is currently under **active development**. Features, APIs, and the overall architecture are evolving continuously.
