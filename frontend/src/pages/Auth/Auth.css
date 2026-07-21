@@ -161,7 +161,7 @@
 
 .auth-submit {
     font-family: var(--font), serif;
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-medium);
     color: var(--black-color);
     background: var(--gold-color);
     border: var(--border) solid var(--white-color);

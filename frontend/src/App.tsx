@@ -1,8 +1,8 @@
-import './App.css'
+import './index.css'
 
 import { Routes, Route } from 'react-router';
-import { LoginPage } from './pages/LoginPage';
-import { RegisterPage } from './pages/RegisterPage';
+import { LoginPage } from './pages/Auth/login/LoginPage.tsx';
+import { RegisterPage } from './pages/Auth/register/RegisterPage.tsx';
 import { UserDashboard } from './pages/UserDashboard';
 import { ModeratorDashboard } from './pages/ModeratorDashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';

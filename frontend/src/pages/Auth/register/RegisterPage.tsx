@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
-import { useRegister } from '../hooks/useAuth';
-import type { RegisterRequest } from '../api/auth.types.ts';
+import { useRegister } from '../../../hooks/useAuth.ts';
+import type { RegisterRequest } from '../../../api/auth.types.ts';
+import '../../Auth/Auth.css'
 
 type FieldErrors = Partial<Record<keyof RegisterRequest, string>>;
 
@@ -55,55 +56,60 @@ export function RegisterPage() {
 
     return (
         <div className="auth-page">
-            <h1>Registration</h1>
-            <form onSubmit={onSubmit} noValidate>
-                <label>
-                    Username
-                    <input
-                        type="text"
-                        value={formData.username}
-                        onChange={(e) => updateField('username', e.target.value)}
-                        aria-invalid={!!fieldErrors.username}
-                        required
-                    />
-                    {fieldErrors.username && (
-                        <span className="field-error">{fieldErrors.username}</span>
-                    )}
-                </label>
-                <label>
-                    Email
-                    <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => updateField('email', e.target.value)}
-                        aria-invalid={!!fieldErrors.email}
-                        required
-                    />
-                    {fieldErrors.email && (
-                        <span className="field-error">{fieldErrors.email}</span>
-                    )}
-                </label>
-                <label>
-                    Password
-                    <input
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => updateField('password', e.target.value)}
-                        aria-invalid={!!fieldErrors.password}
-                        required
-                    />
-                    {fieldErrors.password && (
-                        <span className="field-error">{fieldErrors.password}</span>
-                    )}
-                </label>
-                {formError && <p className="error">{formError}</p>}
-                <button type="submit" disabled={registerMutation.isPending}>
-                    {registerMutation.isPending ? 'Register...' : 'Sign up'}
-                </button>
-            </form>
-            <p>
-                Already have an account? <Link to="/login">Sign in</Link>
-            </p>
+            <div className="auth-card">
+                <span className="auth-mascot" aria-hidden="true">(=^-ω-^=)</span>
+                <h1 className="auth-title">
+                    Registration<span className="cursor">_</span>
+                </h1>
+                <form className="auth-form" onSubmit={onSubmit} noValidate>
+                    <label className="field-label">
+                        <span className="label-text">Username</span>
+                        <input
+                            type="text"
+                            value={formData.username}
+                            onChange={(e) => updateField('username', e.target.value)}
+                            aria-invalid={!!fieldErrors.username}
+                            required
+                        />
+                        {fieldErrors.username && (
+                            <span className="field-error">{fieldErrors.username}</span>
+                        )}
+                    </label>
+                    <label className="field-label">
+                        <span className="label-text">Email</span>
+                        <input
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => updateField('email', e.target.value)}
+                            aria-invalid={!!fieldErrors.email}
+                            required
+                        />
+                        {fieldErrors.email && (
+                            <span className="field-error">{fieldErrors.email}</span>
+                        )}
+                    </label>
+                    <label className="field-label">
+                        <span className="label-text">Password</span>
+                        <input
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) => updateField('password', e.target.value)}
+                            aria-invalid={!!fieldErrors.password}
+                            required
+                        />
+                        {fieldErrors.password && (
+                            <span className="field-error">{fieldErrors.password}</span>
+                        )}
+                    </label>
+                    {formError && <p className="form-error">{formError}</p>}
+                    <button className="auth-submit" type="submit" disabled={registerMutation.isPending}>
+                        {registerMutation.isPending ? 'Register...' : 'Sign up'}
+                    </button>
+                </form>
+                <p className="auth-footer">
+                    Already have an account? <Link to="/login">Sign in</Link>
+                </p>
+            </div>
         </div>
     );
 }
