@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router';
 import { useAuthStore } from '../store/authStore';
+import { NotFoundPage } from '../pages/NotFound/NotFoundPage';
 
 interface Props {
     allowedRoles?: Array<'USER' | 'MODERATOR'>;
@@ -13,7 +14,7 @@ export function ProtectedRoute({ allowedRoles }: Props) {
     }
 
     if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/dashboard" replace />;
+        return <NotFoundPage />;
     }
 
     return <Outlet />;

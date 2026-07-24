@@ -13,7 +13,7 @@ export function useLogin() {
         onSuccess: (response) => {
             const { accessToken, refreshToken, id, username, email, role } = response.data!;
             login(accessToken, refreshToken, { id, username, email, role });
-            navigate(role === 'MODERATOR' ? '/moderator/dashboard' : '/dashboard');
+            navigate(role === 'MODERATOR' ? '/moderator/dashboard' : '/user/dashboard');
         },
     });
 }

@@ -1,5 +1,5 @@
-import { useAuthStore } from '../store/authStore';
-import { useLogout } from '../hooks/useAuth';
+import { useAuthStore } from '../../store/authStore.ts';
+import { useLogout } from '../../hooks/useAuth.ts';
 
 export function ModeratorDashboard() {
     const { user } = useAuthStore();

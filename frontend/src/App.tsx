@@ -1,28 +1,36 @@
-import './index.css'
+import './index.css';
 
 import { Routes, Route } from 'react-router';
 import { LoginPage } from './pages/Auth/login/LoginPage.tsx';
 import { RegisterPage } from './pages/Auth/register/RegisterPage.tsx';
-import { UserDashboard } from './pages/UserDashboard';
-import { ModeratorDashboard } from './pages/ModeratorDashboard';
+import { UserDashboard } from './pages/User/UserDashboard.tsx';
+import { ModeratorDashboard } from './pages/Moderator/ModeratorDashboard.tsx';
+import { NotFoundPage } from './pages/NotFound/NotFoundPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { PublicRoute } from './components/PublicRoute';
+import { RootFallback } from './components/RootFallback';
 
 function App() {
+    return (
+        <Routes>
+            <Route element={<PublicRoute />}>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+            </Route>
 
-  return (
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+            <Route path="/user/*" element={<ProtectedRoute allowedRoles={['USER']} />}>
+                <Route path="dashboard" element={<UserDashboard />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Route>
 
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<UserDashboard />} />
-        </Route>
+            <Route path="/moderator/*" element={<ProtectedRoute allowedRoles={['MODERATOR']} />}>
+                <Route path="dashboard" element={<ModeratorDashboard />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={['MODERATOR']} />}>
-          <Route path="/moderator/dashboard" element={<ModeratorDashboard />} />
-        </Route>
-      </Routes>
-  )
+            <Route path="*" element={<RootFallback />} />
+        </Routes>
+    );
 }
 
-export default App
+export default App;
