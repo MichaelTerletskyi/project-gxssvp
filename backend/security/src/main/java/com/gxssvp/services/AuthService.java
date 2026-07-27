@@ -1,11 +1,9 @@
 package com.gxssvp.services;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
-import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import com.gxssvp.entities.RefreshToken;
@@ -23,6 +21,7 @@ import com.gxssvp.jwt.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,6 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
-    private final Validator validator;
 
     /**
      * Registers a new user and returns authentication tokens.
@@ -57,7 +55,6 @@ public class AuthService {
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .enabled(true)
-                .createdAt(Instant.now())
                 .build();
 
         checkForViolations(user);
@@ -65,8 +62,9 @@ public class AuthService {
         final User savedUser = userRepository.save(user);
         log.info("User saved: id='{}', username='{}'", savedUser.getId(), savedUser.getUsername());
 
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        final Authentication authentication = new UsernamePasswordAuthenticationToken(
+                savedUser.getUsername(), null,
+                List.of(new SimpleGrantedAuthority("ROLE_" + savedUser.getRole().name()))
         );
 
         final String accessToken = jwtTokenProvider.generateAccessToken(authentication);
@@ -95,15 +93,6 @@ public class AuthService {
 
         if (userRepository.existsByEmail(user.getEmail())) {
             errors.put("email", String.format("Email '%s' is already taken", user.getEmail()));
-        }
-
-        final Set<ConstraintViolation<User>> violations = validator.validate(user);
-        if (!violations.isEmpty()) {
-            violations.forEach(violation -> {
-                final String fieldName = violation.getPropertyPath().toString();
-                final String errorMessage = violation.getMessage();
-                errors.put(fieldName, errorMessage);
-            });
         }
 
         if (!errors.isEmpty()) {

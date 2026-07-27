@@ -19,7 +19,9 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
     private String accessToken;
     private String refreshToken;
-    private final String type = "Bearer";
+
+    @Builder.Default
+    private String type = "Bearer";
     private UUID id;
     private String username;
     private String email;
