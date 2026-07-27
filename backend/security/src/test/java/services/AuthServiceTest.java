@@ -2,9 +2,6 @@ package services;
 
 import com.gxssvp.services.AuthService;
 import com.gxssvp.services.RefreshTokenService;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import lombok.extern.log4j.Log4j2;
 import com.gxssvp.entities.RefreshToken;
 import com.gxssvp.entities.Role;
@@ -13,26 +10,20 @@ import com.gxssvp.repositories.UserRepository;
 import com.gxssvp.dtos.AuthResponse;
 import com.gxssvp.dtos.RegisterRequest;
 import com.gxssvp.jwt.JwtTokenProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,9 +46,6 @@ class AuthServiceTest {
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
-
-    @Mock
-    private AuthenticationManager authenticationManager;
 
     @Mock
     private RefreshTokenService refreshTokenService;
