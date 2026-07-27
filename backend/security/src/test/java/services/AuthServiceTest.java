@@ -1,8 +1,10 @@
 package services;
 
+import com.gxssvp.dtos.LoginRequest;
+import com.gxssvp.exceptions.UserLoginException;
+import com.gxssvp.exceptions.UserRegistrationException;
 import com.gxssvp.services.AuthService;
 import com.gxssvp.services.RefreshTokenService;
-import lombok.extern.log4j.Log4j2;
 import com.gxssvp.entities.RefreshToken;
 import com.gxssvp.entities.Role;
 import com.gxssvp.entities.User;
@@ -10,23 +12,27 @@ import com.gxssvp.repositories.UserRepository;
 import com.gxssvp.dtos.AuthResponse;
 import com.gxssvp.dtos.RegisterRequest;
 import com.gxssvp.jwt.JwtTokenProvider;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 /**
  * Test of Service handling authentication, registration, and token lifecycle operations.
@@ -34,7 +40,6 @@ import static org.mockito.Mockito.when;
  *
  * @author Michael Terletskyi
  */
-@Log4j2
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
@@ -48,45 +53,221 @@ class AuthServiceTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
     private RefreshTokenService refreshTokenService;
 
     @InjectMocks
     private AuthService authService;
 
-    @ParameterizedTest
-    @CsvFileSource(resources = "/services/registerRequestsValidCases.csv", numLinesToSkip = 1)
-    void shouldRegisterAllCasesAreValid(final String username, final String email, final String password) {
-        final RegisterRequest request = new RegisterRequest();
-                request.setUsername(username);
-                request.setEmail(email);
-                request.setPassword(password);
+    @Nested
+    @DisplayName("register()")
+    class Register {
 
-        when(passwordEncoder.encode(password)).thenReturn("hashedPassword");
+        @Test
+        @DisplayName("Should successfully register a new user and return AuthResponse")
+        void shouldRegisterUserSuccessfully() {
+            final RegisterRequest request = new RegisterRequest();
+            request.setUsername("john_doe");
+            request.setEmail("john@example.com");
+            request.setPassword( "rawPassword123");
 
-        final User mockSavedUser = User.builder()
-                .id(UUID.randomUUID())
-                .username(username)
-                .email(email)
-                .role(Role.USER)
-                .build();
+            given(userRepository.existsByUsername(request.getUsername())).willReturn(false);
+            given(userRepository.existsByEmail(request.getEmail())).willReturn(false);
+            given(passwordEncoder.encode(request.getPassword())).willReturn("encodedPassword");
 
-        when(userRepository.save(any(User.class))).thenReturn(mockSavedUser);
+            final UUID generatedId = UUID.randomUUID();
+            final User savedUser = User.builder()
+                    .id(generatedId)
+                    .username(request.getUsername())
+                    .email(request.getEmail())
+                    .passwordHash("encodedPassword")
+                    .role(Role.USER)
+                    .enabled(true)
+                    .build();
 
-        when(jwtTokenProvider.generateAccessToken(any(Authentication.class))).thenReturn("mocked-jwt-token");
+            given(userRepository.save(any(User.class))).willReturn(savedUser);
+            given(jwtTokenProvider.generateAccessToken(any(Authentication.class))).willReturn("mock-access-token");
 
-        RefreshToken mockRefreshToken = new RefreshToken();
-        mockRefreshToken.setToken("mocked-refresh-token");
-        when(refreshTokenService.createRefreshToken(username)).thenReturn(mockRefreshToken);
+            RefreshToken refreshToken = new RefreshToken();
+            refreshToken.setToken("mock-refresh-token");
+            given(refreshTokenService.createRefreshToken(request.getUsername())).willReturn(refreshToken);
 
-        final AuthResponse registered = authService.register(request);
+            final AuthResponse response = authService.register(request);
 
-        assertNotNull(registered);
-        assertEquals(username, registered.getUsername());
-        assertEquals(email, registered.getEmail());
-        assertEquals(Role.USER.toString(), registered.getRole());
-        assertThat(registered.getRefreshToken()).isNotBlank();
-        assertThat(registered.getAccessToken()).isNotBlank();
+            assertThat(response).isNotNull();
+            assertThat(response.getId()).isEqualTo(generatedId);
+            assertThat(response.getUsername()).isEqualTo("john_doe");
+            assertThat(response.getEmail()).isEqualTo("john@example.com");
+            assertThat(response.getRole()).isEqualTo("USER");
+            assertThat(response.getAccessToken()).isEqualTo("mock-access-token");
+            assertThat(response.getRefreshToken()).isEqualTo("mock-refresh-token");
 
-        verify(userRepository, times(1)).save(any(User.class));
+            final ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+            verify(userRepository).save(userCaptor.capture());
+            User capturedUser = userCaptor.getValue();
+            assertThat(capturedUser.getPasswordHash()).isEqualTo("encodedPassword");
+        }
+
+        @Test
+        @DisplayName("Should throw UserRegistrationException when username is already taken")
+        void shouldThrowExceptionWhenUsernameIsTaken() {
+            final RegisterRequest request = new RegisterRequest();
+            request.setUsername("john_doe");
+            request.setEmail("john@example.com");
+            request.setPassword( "rawPassword123");
+
+            given(userRepository.existsByUsername(request.getUsername())).willReturn(true);
+            given(userRepository.existsByEmail(request.getEmail())).willReturn(false);
+
+            assertThatThrownBy(() -> authService.register(request))
+                    .isInstanceOf(UserRegistrationException.class)
+                    .hasMessage("Invalid user data")
+                    .satisfies(ex -> {
+                        UserRegistrationException registrationException = (UserRegistrationException) ex;
+                        assertThat(registrationException.getData())
+                                .containsEntry("username", "Username 'john_doe' is already taken");
+                    });
+
+            verify(userRepository, never()).save(any());
+            verify(jwtTokenProvider, never()).generateAccessToken((Authentication) any());
+        }
+
+        @Test
+        @DisplayName("Should throw UserRegistrationException when email is already taken")
+        void shouldThrowExceptionWhenEmailIsTaken() {
+            final RegisterRequest request = new RegisterRequest();
+            request.setUsername("john_doe");
+            request.setEmail("john@example.com");
+            request.setPassword( "rawPassword123");
+
+            given(userRepository.existsByUsername(request.getUsername())).willReturn(false);
+            given(userRepository.existsByEmail(request.getEmail())).willReturn(true);
+
+            assertThatThrownBy(() -> authService.register(request))
+                    .isInstanceOf(UserRegistrationException.class)
+                    .hasMessage("Invalid user data");
+
+            verify(userRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("Should capture both username and email errors when both are taken")
+        void shouldCollectBothErrorsWhenUsernameAndEmailAreTaken() {
+            final RegisterRequest request = new RegisterRequest();
+            request.setUsername("john_doe");
+            request.setEmail("john@example.com");
+            request.setPassword( "rawPassword123");
+
+            given(userRepository.existsByUsername(request.getUsername())).willReturn(true);
+            given(userRepository.existsByEmail(request.getEmail())).willReturn(true);
+
+            assertThatThrownBy(() -> authService.register(request))
+                    .isInstanceOf(UserRegistrationException.class)
+                    .hasFieldOrPropertyWithValue("message", "Invalid user data");
+
+            verify(userRepository, never()).save(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("login()")
+    class Login {
+
+        @Test
+        @DisplayName("Should successfully authenticate user and return AuthResponse")
+        void shouldLoginUserSuccessfully() {
+            final LoginRequest request = new LoginRequest();
+            request.setUsername("john_doe");
+            request.setPassword("rawPassword123");
+
+            final Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    request.getUsername(), request.getPassword()
+            );
+
+            given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .willReturn(authentication);
+            given(jwtTokenProvider.generateAccessToken(authentication))
+                    .willReturn("mock-access-token");
+
+            final RefreshToken refreshToken = new RefreshToken();
+            refreshToken.setToken("mock-refresh-token");
+            given(refreshTokenService.createRefreshToken(request.getUsername()))
+                    .willReturn(refreshToken);
+
+            UUID userId = UUID.randomUUID();
+            User user = User.builder()
+                    .id(userId)
+                    .username(request.getUsername())
+                    .email("john@example.com")
+                    .role(Role.USER)
+                    .build();
+            given(userRepository.findByUsername(request.getUsername()))
+                    .willReturn(Optional.of(user));
+
+            final AuthResponse response = authService.login(request);
+
+            assertThat(response).isNotNull();
+            assertThat(response.getId()).isEqualTo(userId);
+            assertThat(response.getUsername()).isEqualTo("john_doe");
+            assertThat(response.getEmail()).isEqualTo("john@example.com");
+            assertThat(response.getRole()).isEqualTo("USER");
+            assertThat(response.getAccessToken()).isEqualTo("mock-access-token");
+            assertThat(response.getRefreshToken()).isEqualTo("mock-refresh-token");
+
+            verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+            verify(jwtTokenProvider).generateAccessToken(authentication);
+            verify(refreshTokenService).createRefreshToken(request.getUsername());
+            verify(userRepository).findByUsername(request.getUsername());
+        }
+
+        @Test
+        @DisplayName("Should propagate exception when AuthenticationManager fails (e.g. BadCredentialsException)")
+        void shouldThrowExceptionWhenCredentialsAreInvalid() {
+            final LoginRequest request = new LoginRequest();
+            request.setUsername("john_doe");
+            request.setPassword("rawPassword123");
+
+            given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .willThrow(new BadCredentialsException("Bad credentials"));
+
+            assertThatThrownBy(() -> authService.login(request))
+                    .isInstanceOf(BadCredentialsException.class)
+                    .hasMessage("Bad credentials");
+
+            verify(jwtTokenProvider, never()).generateAccessToken((Authentication) any());
+            verify(refreshTokenService, never()).createRefreshToken(any());
+            verify(userRepository, never()).findByUsername(any());
+        }
+
+        @Test
+        @DisplayName("Should throw UserLoginException when authenticated user is not found in repository")
+        void shouldThrowUserLoginExceptionWhenUserNotFound() {
+            final LoginRequest request = new LoginRequest();
+            request.setUsername("john_doe");
+            request.setPassword("rawPassword123");
+
+            final Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    request.getUsername(), request.getPassword()
+            );
+
+            given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .willReturn(authentication);
+            given(jwtTokenProvider.generateAccessToken(authentication))
+                    .willReturn("mock-access-token");
+
+            final RefreshToken refreshToken = new RefreshToken();
+            refreshToken.setToken("mock-refresh-token");
+            given(refreshTokenService.createRefreshToken(request.getUsername()))
+                    .willReturn(refreshToken);
+
+            given(userRepository.findByUsername(request.getUsername()))
+                    .willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> authService.login(request))
+                    .isInstanceOf(UserLoginException.class)
+                    .hasMessage("User not found");
+        }
     }
 }
