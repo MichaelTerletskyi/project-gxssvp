@@ -1,6 +1,6 @@
 package services;
 
-import com.gxssvp.dtos.LoginRequest;
+import com.gxssvp.dtos.*;
 import com.gxssvp.exceptions.UserLoginException;
 import com.gxssvp.exceptions.UserRegistrationException;
 import com.gxssvp.services.AuthService;
@@ -9,8 +9,6 @@ import com.gxssvp.entities.RefreshToken;
 import com.gxssvp.entities.Role;
 import com.gxssvp.entities.User;
 import com.gxssvp.repositories.UserRepository;
-import com.gxssvp.dtos.AuthResponse;
-import com.gxssvp.dtos.RegisterRequest;
 import com.gxssvp.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -268,6 +266,67 @@ class AuthServiceTest {
             assertThatThrownBy(() -> authService.login(request))
                     .isInstanceOf(UserLoginException.class)
                     .hasMessage("User not found");
+        }
+    }
+
+    @Nested
+    @DisplayName("refreshToken()")
+    class RefreshTokenTests {
+
+        @Test
+        @DisplayName("Should successfully verify refresh token and return new tokens")
+        void shouldRefreshTokenSuccessfully() {
+            final String oldTokenString = "valid-old-refresh-token";
+            final RefreshTokenRequest request = new RefreshTokenRequest();
+            request.setRefreshToken(oldTokenString);
+
+            final User mockUser = User.builder()
+                    .id(UUID.randomUUID())
+                    .username("john_doe")
+                    .build();
+
+            final RefreshToken existingRefreshToken = new RefreshToken();
+            existingRefreshToken.setToken(oldTokenString);
+            existingRefreshToken.setUser(mockUser);
+
+            given(refreshTokenService.verifyRefreshToken(oldTokenString))
+                    .willReturn(existingRefreshToken);
+
+            given(jwtTokenProvider.generateAccessToken("john_doe"))
+                    .willReturn("new-access-token");
+
+            final RefreshToken newlyCreatedRefreshToken = new RefreshToken();
+            newlyCreatedRefreshToken.setToken("new-refresh-token");
+            given(refreshTokenService.createRefreshToken("john_doe"))
+                    .willReturn(newlyCreatedRefreshToken);
+
+            final RefreshTokenResponse response = authService.refreshToken(request);
+
+            assertThat(response).isNotNull();
+            assertThat(response.getAccessToken()).isEqualTo("new-access-token");
+            assertThat(response.getRefreshToken()).isEqualTo("new-refresh-token");
+
+            verify(refreshTokenService).verifyRefreshToken(oldTokenString);
+            verify(jwtTokenProvider).generateAccessToken("john_doe");
+            verify(refreshTokenService).createRefreshToken("john_doe");
+        }
+
+        @Test
+        @DisplayName("Should propagate exception when refresh token verification fails")
+        void shouldThrowExceptionWhenRefreshTokenIsInvalidOrExpired() {
+            final String invalidToken = "invalid-or-expired-token";
+            final RefreshTokenRequest request = new RefreshTokenRequest();
+            request.setRefreshToken(invalidToken);
+
+            given(refreshTokenService.verifyRefreshToken(invalidToken))
+                    .willThrow(new RuntimeException("Refresh token was expired or invalid"));
+
+            assertThatThrownBy(() -> authService.refreshToken(request))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage("Refresh token was expired or invalid");
+
+            verify(jwtTokenProvider, never()).generateAccessToken(anyString());
+            verify(refreshTokenService, never()).createRefreshToken(anyString());
         }
     }
 }
