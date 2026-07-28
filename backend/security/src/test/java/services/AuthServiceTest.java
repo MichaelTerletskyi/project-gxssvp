@@ -30,6 +30,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.*;
 
 /**
@@ -327,6 +328,35 @@ class AuthServiceTest {
 
             verify(jwtTokenProvider, never()).generateAccessToken(anyString());
             verify(refreshTokenService, never()).createRefreshToken(anyString());
+        }
+    }
+
+    @Nested
+    @DisplayName("logout()")
+    class LogoutTests {
+
+        @Test
+        @DisplayName("Should successfully revoke refresh token")
+        void shouldRevokeRefreshTokenSuccessfully() {
+            String refreshToken = "valid-refresh-token";
+
+            authService.logout(refreshToken);
+
+            verify(refreshTokenService).revokeRefreshToken(refreshToken);
+        }
+
+        @Test
+        @DisplayName("Should propagate exception when refresh token revocation fails")
+        void shouldPropagateExceptionWhenRevocationFails() {
+            String invalidToken = "invalid-token";
+            willThrow(new RuntimeException("Token not found or already revoked"))
+                    .given(refreshTokenService).revokeRefreshToken(invalidToken);
+
+            assertThatThrownBy(() -> authService.logout(invalidToken))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage("Token not found or already revoked");
+
+            verify(refreshTokenService).revokeRefreshToken(invalidToken);
         }
     }
 }
