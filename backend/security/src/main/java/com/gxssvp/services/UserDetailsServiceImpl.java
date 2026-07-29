@@ -1,9 +1,9 @@
 package com.gxssvp.services;
 
-import java.util.Collections;
-import lombok.RequiredArgsConstructor;
 import com.gxssvp.entities.User;
 import com.gxssvp.repositories.UserRepository;
+import java.util.Collections;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

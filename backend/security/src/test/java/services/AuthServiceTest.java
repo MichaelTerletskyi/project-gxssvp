@@ -1,15 +1,30 @@
 package services;
 
-import com.gxssvp.dtos.*;
-import com.gxssvp.exceptions.UserLoginException;
-import com.gxssvp.exceptions.UserRegistrationException;
-import com.gxssvp.services.AuthService;
-import com.gxssvp.services.RefreshTokenService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+import com.gxssvp.dtos.AuthResponse;
+import com.gxssvp.dtos.LoginRequest;
+import com.gxssvp.dtos.RefreshTokenRequest;
+import com.gxssvp.dtos.RefreshTokenResponse;
+import com.gxssvp.dtos.RegisterRequest;
 import com.gxssvp.entities.RefreshToken;
 import com.gxssvp.entities.Role;
 import com.gxssvp.entities.User;
-import com.gxssvp.repositories.UserRepository;
+import com.gxssvp.exceptions.UserLoginException;
+import com.gxssvp.exceptions.UserRegistrationException;
 import com.gxssvp.jwt.JwtTokenProvider;
+import com.gxssvp.repositories.UserRepository;
+import com.gxssvp.services.AuthService;
+import com.gxssvp.services.RefreshTokenService;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,17 +39,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.*;
-
 /**
- * Test of Service handling authentication, registration, and token lifecycle operations.
+ * Test of {@link AuthService} authentication, registration, and token lifecycle operations.
  * It checks how Manages access and refresh token generation, validation, and revocation.
  *
  * @author Michael Terletskyi
@@ -70,7 +76,7 @@ class AuthServiceTest {
             final RegisterRequest request = new RegisterRequest();
             request.setUsername("john_doe");
             request.setEmail("john@example.com");
-            request.setPassword( "rawPassword123");
+            request.setPassword("rawPassword123");
 
             given(userRepository.existsByUsername(request.getUsername())).willReturn(false);
             given(userRepository.existsByEmail(request.getEmail())).willReturn(false);
@@ -115,7 +121,7 @@ class AuthServiceTest {
             final RegisterRequest request = new RegisterRequest();
             request.setUsername("john_doe");
             request.setEmail("john@example.com");
-            request.setPassword( "rawPassword123");
+            request.setPassword("rawPassword123");
 
             given(userRepository.existsByUsername(request.getUsername())).willReturn(true);
             given(userRepository.existsByEmail(request.getEmail())).willReturn(false);
@@ -139,7 +145,7 @@ class AuthServiceTest {
             final RegisterRequest request = new RegisterRequest();
             request.setUsername("john_doe");
             request.setEmail("john@example.com");
-            request.setPassword( "rawPassword123");
+            request.setPassword("rawPassword123");
 
             given(userRepository.existsByUsername(request.getUsername())).willReturn(false);
             given(userRepository.existsByEmail(request.getEmail())).willReturn(true);
@@ -157,7 +163,7 @@ class AuthServiceTest {
             final RegisterRequest request = new RegisterRequest();
             request.setUsername("john_doe");
             request.setEmail("john@example.com");
-            request.setPassword( "rawPassword123");
+            request.setPassword("rawPassword123");
 
             given(userRepository.existsByUsername(request.getUsername())).willReturn(true);
             given(userRepository.existsByEmail(request.getEmail())).willReturn(true);

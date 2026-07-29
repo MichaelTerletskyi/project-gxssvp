@@ -1,8 +1,8 @@
 package com.gxssvp.exceptions;
 
+import com.gxssvp.dtos.ApiResponse;
 import java.util.HashMap;
 import java.util.Map;
-import com.gxssvp.dtos.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -55,12 +55,10 @@ public class SecurityExceptionHandler {
             MethodArgumentNotValidException ex) {
 
         final Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(fieldError ->
-                {
-                    final String field = fieldError.getField();
-                    errors.put(field, fieldError.getDefaultMessage());
-                }
-        );
+        ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
+            final String field = fieldError.getField();
+            errors.put(field, fieldError.getDefaultMessage());
+        });
 
         log.warn("Validation failed: {}", errors);
 

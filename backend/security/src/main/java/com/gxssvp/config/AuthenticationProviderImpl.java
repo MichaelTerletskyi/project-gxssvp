@@ -1,12 +1,12 @@
 package com.gxssvp.config;
 
+import com.gxssvp.entities.User;
+import com.gxssvp.exceptions.UserLoginException;
+import com.gxssvp.repositories.UserRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
-import com.gxssvp.entities.User;
-import com.gxssvp.repositories.UserRepository;
-import com.gxssvp.exceptions.UserLoginException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
