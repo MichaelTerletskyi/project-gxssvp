@@ -28,8 +28,7 @@ public class JwtTokenProvider {
     }
 
     public String generateAccessToken(Authentication authentication) {
-        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return generateAccessToken(userDetails.getUsername());
+        return generateAccessToken(authentication.getName());
     }
 
     /**
