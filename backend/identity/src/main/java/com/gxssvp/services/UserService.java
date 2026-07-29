@@ -1,9 +1,9 @@
 package com.gxssvp.services;
 
-import java.util.UUID;
 import com.gxssvp.dtos.UserResponse;
 import com.gxssvp.entities.User;
 import com.gxssvp.repositories.UserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

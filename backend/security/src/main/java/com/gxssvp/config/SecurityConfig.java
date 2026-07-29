@@ -1,11 +1,11 @@
 package com.gxssvp.config;
 
+import com.gxssvp.entities.Role;
+import com.gxssvp.jwt.JwtAuthenticationFilter;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import com.gxssvp.entities.Role;
-import com.gxssvp.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

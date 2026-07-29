@@ -1,14 +1,14 @@
 package com.gxssvp.services;
 
+import com.gxssvp.config.JwtProperties;
+import com.gxssvp.entities.RefreshToken;
+import com.gxssvp.entities.User;
+import com.gxssvp.exceptions.RefreshTokenException;
+import com.gxssvp.repositories.RefreshTokenRepository;
+import com.gxssvp.repositories.UserRepository;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import com.gxssvp.entities.RefreshToken;
-import com.gxssvp.entities.User;
-import com.gxssvp.repositories.RefreshTokenRepository;
-import com.gxssvp.repositories.UserRepository;
-import com.gxssvp.config.JwtProperties;
-import com.gxssvp.exceptions.RefreshTokenException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

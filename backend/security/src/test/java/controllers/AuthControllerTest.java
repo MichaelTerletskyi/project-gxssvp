@@ -1,40 +1,46 @@
 package controllers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.gxssvp.config.SecurityConfig;
-import com.gxssvp.jwt.JwtAuthenticationFilter;
 import com.gxssvp.controllers.AuthController;
-import com.gxssvp.dtos.*;
+import com.gxssvp.dtos.AuthResponse;
+import com.gxssvp.dtos.LoginRequest;
+import com.gxssvp.dtos.RefreshTokenRequest;
+import com.gxssvp.dtos.RefreshTokenResponse;
+import com.gxssvp.dtos.RegisterRequest;
+import com.gxssvp.jwt.JwtAuthenticationFilter;
 import com.gxssvp.services.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.UUID;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/**
+ * Test of {@link AuthController} endpoints for login, registration, token refresh, and logout actions.
+ *
+ * @author Michael Terletskyi
+ */
 @WebMvcTest(AuthController.class)
-@ContextConfiguration(classes = {
-        AuthController.class,
-        SecurityConfig.class
-})
+@ContextConfiguration(classes = {AuthController.class, SecurityConfig.class})
 class AuthControllerTest {
 
     @Autowired
@@ -49,7 +55,7 @@ class AuthControllerTest {
     @MockitoBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    private final String BASE_URL = "/rest/api/v1/auth";
+    private static final String BASE_URL = "/rest/api/v1/auth";
 
     @BeforeEach
     void setUp() throws Exception {

@@ -1,8 +1,5 @@
 package com.gxssvp.controllers;
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import com.gxssvp.dtos.ApiResponse;
 import com.gxssvp.dtos.AuthResponse;
 import com.gxssvp.dtos.LoginRequest;
@@ -10,6 +7,9 @@ import com.gxssvp.dtos.RefreshTokenRequest;
 import com.gxssvp.dtos.RefreshTokenResponse;
 import com.gxssvp.dtos.RegisterRequest;
 import com.gxssvp.services.AuthService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

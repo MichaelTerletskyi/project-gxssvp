@@ -1,9 +1,9 @@
 package com.gxssvp.repositories;
 
-import java.util.Optional;
-import java.util.UUID;
 import com.gxssvp.entities.RefreshToken;
 import com.gxssvp.entities.User;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

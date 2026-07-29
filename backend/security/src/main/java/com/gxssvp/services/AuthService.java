@@ -1,23 +1,22 @@
 package com.gxssvp.services;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import com.gxssvp.entities.RefreshToken;
-import com.gxssvp.entities.Role;
-import com.gxssvp.entities.User;
-import com.gxssvp.repositories.UserRepository;
 import com.gxssvp.dtos.AuthResponse;
 import com.gxssvp.dtos.LoginRequest;
 import com.gxssvp.dtos.RefreshTokenRequest;
 import com.gxssvp.dtos.RefreshTokenResponse;
 import com.gxssvp.dtos.RegisterRequest;
+import com.gxssvp.entities.RefreshToken;
+import com.gxssvp.entities.Role;
+import com.gxssvp.entities.User;
 import com.gxssvp.exceptions.UserLoginException;
 import com.gxssvp.exceptions.UserRegistrationException;
 import com.gxssvp.jwt.JwtTokenProvider;
+import com.gxssvp.repositories.UserRepository;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
