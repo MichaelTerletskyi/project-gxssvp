@@ -1,11 +1,14 @@
 package controllers;
 
 import com.gxssvp.config.SecurityConfig;
-import com.gxssvp.config.TestSecurityConfig;
+import com.gxssvp.jwt.JwtAuthenticationFilter;
 import com.gxssvp.controllers.AuthController;
 import com.gxssvp.dtos.*;
-import com.gxssvp.jwt.JwtAuthenticationFilter;
 import com.gxssvp.services.AuthService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,8 +25,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AuthController.class)
 @ContextConfiguration(classes = {
         AuthController.class,
-        TestSecurityConfig.class
+        SecurityConfig.class
 })
 class AuthControllerTest {
 
@@ -44,7 +46,21 @@ class AuthControllerTest {
     @MockitoBean
     private AuthService authService;
 
+    @MockitoBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     private final String BASE_URL = "/rest/api/v1/auth";
+
+    @BeforeEach
+    void setUp() throws Exception {
+        doAnswer(invocation -> {
+            HttpServletRequest request = invocation.getArgument(0);
+            HttpServletResponse response = invocation.getArgument(1);
+            FilterChain chain = invocation.getArgument(2);
+            chain.doFilter(request, response);
+            return null;
+        }).when(jwtAuthenticationFilter).doFilter(any(), any(), any());
+    }
 
     @Nested
     @DisplayName("POST /register")
