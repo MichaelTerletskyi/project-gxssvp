@@ -9,6 +9,7 @@ import { NotFoundPage } from './pages/NotFound/NotFoundPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PublicRoute } from './components/PublicRoute';
 import { RootFallback } from './components/RootFallback';
+import { AppLayout } from './layouts/AppLayout';
 
 function App() {
     return (
@@ -19,13 +20,17 @@ function App() {
             </Route>
 
             <Route path="/user/*" element={<ProtectedRoute allowedRoles={['USER']} />}>
-                <Route path="dashboard" element={<UserDashboard />} />
-                <Route path="*" element={<NotFoundPage />} />
+                <Route element={<AppLayout />}>
+                    <Route path="dashboard" element={<UserDashboard />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Route>
             </Route>
 
             <Route path="/moderator/*" element={<ProtectedRoute allowedRoles={['MODERATOR']} />}>
-                <Route path="dashboard" element={<ModeratorDashboard />} />
-                <Route path="*" element={<NotFoundPage />} />
+                <Route element={<AppLayout />}>
+                    <Route path="dashboard" element={<ModeratorDashboard />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Route>
             </Route>
 
             <Route path="*" element={<RootFallback />} />
