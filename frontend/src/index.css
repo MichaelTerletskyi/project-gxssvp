@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
 
 :root {
-  --crimson-color: #B22222;
+  --crimson-color: #b22222;
   --black-color: #000000;
-  --white-color: #FFFFFF;
-  --fuchsia-color: #FF00FF;
-  --lime-color: #00FF00;
-  --cyan-color: #00FFFF;
-  --gold-color: #FFD700;
+  --white-color: #ffffff;
+  --fuchsia-color: #ff00ff;
+  --lime-color: #00ff00;
+  --cyan-color: #00ffff;
+  --gold-color: #ffd700;
 
-  --font: "VT323", serif;
+  --font: 'VT323', serif;
 
   --spacing-small: 0.25rem;
   --spacing-medium: 1rem;

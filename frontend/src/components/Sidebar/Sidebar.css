@@ -1,151 +1,161 @@
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 30vw;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    background: var(--black-color);
-    border-right: var(--border) dashed var(--gold-color);
-    padding: var(--spacing-big) var(--spacing-medium) var(--spacing-medium);
-    font-family: var(--font), serif;
-    z-index: 10;
-    overflow-y: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: var(--black-color);
+  border-right: var(--border) dashed var(--gold-color);
+  padding: var(--spacing-big) var(--spacing-medium) var(--spacing-medium);
+  font-family: var(--font), serif;
+  z-index: 10;
+  overflow-y: auto;
 }
 
 .sidebar-nav,
 .sidebar-post {
-    width: 50%;
-    box-sizing: border-box;
+  width: 50%;
+  box-sizing: border-box;
 }
 
 .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
 }
 
 .sidebar-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
 }
 
 .sidebar-group + .sidebar-group {
-    margin-top: var(--spacing-medium);
-    padding-top: var(--spacing-medium);
-    border-top: 1px dashed rgba(255, 255, 255, 0.25);
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
 }
 
 .sidebar-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-medium);
-    padding: var(--spacing-small) var(--spacing-medium);
-    border-radius: var(--radius-small);
-    color: var(--white-color);
-    text-decoration: none;
-    font-size: var(--font-size-big);
-    border: var(--border) solid transparent;
-    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--radius-small);
+  color: var(--white-color);
+  text-decoration: none;
+  font-size: var(--font-size-big);
+  border: var(--border) solid transparent;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .sidebar-item svg {
-    width: 22px;
-    height: 22px;
-    flex-shrink: 0;
-    stroke: var(--white-color);
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  stroke: var(--white-color);
 }
 
 .sidebar-item:hover {
-    border-color: var(--cyan-color);
-    background: rgba(0, 255, 255, 0.08);
+  border-color: var(--cyan-color);
+  background: rgba(0, 255, 255, 0.08);
 }
 
 .sidebar-item:hover svg {
-    stroke: var(--cyan-color);
+  stroke: var(--cyan-color);
 }
 
 .sidebar-item.active {
-    background: var(--black-color);
-    border-color: var(--fuchsia-color);
-    box-shadow: 3px 3px 0 var(--fuchsia-color);
+  background: var(--black-color);
+  border-color: var(--fuchsia-color);
+  box-shadow: 3px 3px 0 var(--fuchsia-color);
 }
 
 .sidebar-item.active svg {
-    stroke: var(--lime-color);
+  stroke: var(--lime-color);
 }
 
 .sidebar-item.bold {
-    font-weight: 700;
-    color: var(--gold-color);
+  font-weight: 700;
+  color: var(--gold-color);
 }
 
 .sidebar-item.bold svg {
-    stroke: var(--gold-color);
+  stroke: var(--gold-color);
 }
 
 .sidebar-item.bold:hover svg,
 .sidebar-item.bold.active svg {
-    stroke: var(--lime-color);
+  stroke: var(--lime-color);
 }
 
 .sidebar-dot {
-    position: absolute;
-    top: 4px;
-    left: 22px;
-    width: 8px;
-    height: 8px;
-    background: var(--cyan-color);
-    box-shadow: 0 0 0 2px var(--black-color);
-    animation: sidebar-blink 1.4s step-end infinite;
+  position: absolute;
+  top: 4px;
+  left: 22px;
+  width: 8px;
+  height: 8px;
+  background: var(--cyan-color);
+  box-shadow: 0 0 0 2px var(--black-color);
+  animation: sidebar-blink 1.4s step-end infinite;
 }
 
 @keyframes sidebar-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.25; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
 }
 
 .sidebar-post {
-    margin-top: var(--spacing-big);
-    font-family: var(--font), serif;
-    font-size: var(--font-size-big);
-    color: var(--black-color);
-    background: var(--gold-color);
-    border: var(--border) solid var(--white-color);
-    border-radius: 999px;
-    padding: var(--spacing-medium);
-    text-align: center;
-    cursor: pointer;
-    box-shadow: 4px 4px 0 var(--fuchsia-color);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  margin-top: var(--spacing-big);
+  font-family: var(--font), serif;
+  font-size: var(--font-size-big);
+  color: var(--black-color);
+  background: var(--gold-color);
+  border: var(--border) solid var(--white-color);
+  border-radius: 999px;
+  padding: var(--spacing-medium);
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--fuchsia-color);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .sidebar-post:hover {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 var(--fuchsia-color);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--fuchsia-color);
 }
 
 .sidebar-post:active {
-    transform: translate(4px, 4px);
-    box-shadow: 0 0 0 var(--fuchsia-color);
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--fuchsia-color);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sidebar-dot {
-        animation: none;
-    }
+  .sidebar-dot {
+    animation: none;
+  }
 }
 
 @media (max-width: 900px) {
-    .sidebar {
-        width: 220px;
-        padding: var(--spacing-medium) var(--spacing-small);
-    }
-    .sidebar-item {
-        font-size: var(--font-size-medium);
-    }
+  .sidebar {
+    width: 220px;
+    padding: var(--spacing-medium) var(--spacing-small);
+  }
+  .sidebar-item {
+    font-size: var(--font-size-medium);
+  }
 }
