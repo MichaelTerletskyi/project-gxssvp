@@ -7,6 +7,8 @@ RUN npm ci --legacy-peer-deps
 
 COPY . .
 
+RUN npm run lint
+
 RUN npm run build
 
 RUN ls -la /app/dist || (echo "Dist folder not found!" && exit 1)
