@@ -28,14 +28,14 @@ function App() {
 
             <Route path="/user/*" element={<ProtectedRoute allowedRoles={['USER']}/>}>
                 <Route element={<AppLayout/>}>
+                    <Route path="home" element={<HomePage/>}/>
+                    <Route path="explore" element={<ExplorePage/>}/>
+                    <Route path="notifications" element={<NotificationsPage/>}/>
+                    <Route path="follow" element={<FollowPage/>}/>
+                    <Route path="chat" element={<ChatPage/>}/>
+                    <Route path="bookmarks" element={<BookmarksPage/>}/>
                     <Route path="profile" element={<UserProfilePage/>}/>
                     <Route path="settings" element={<SettingsPage/>}/>
-                    <Route path="bookmarks" element={<BookmarksPage/>}/>
-                    <Route path="chat" element={<ChatPage/>}/>
-                    <Route path="follow" element={<FollowPage/>}/>
-                    <Route path="notifications" element={<NotificationsPage/>}/>
-                    <Route path="explore" element={<ExplorePage/>}/>
-                    <Route path="home" element={<HomePage/>}/>
                     <Route path="*" element={<NotFoundPage/>}/>
                 </Route>
             </Route>
