@@ -6,25 +6,23 @@ import {
     UserPlus,
     MessageCircle,
     Bookmark,
-    Rocket,
     User,
     Settings,
 } from 'lucide-react';
 import './Sidebar.css';
 
 const primaryItems = [
-    { to: '/', label: 'Home', icon: Home, hasDot: true },
-    { to: '/explore', label: 'Explore', icon: Search },
-    { to: '/notifications', label: 'Notifications', icon: Bell },
-    { to: '/follow', label: 'Follow', icon: UserPlus },
-    { to: '/chat', label: 'Chat', icon: MessageCircle },
-    { to: '/bookmarks', label: 'Bookmarks', icon: Bookmark },
-    { to: '/creator-studio', label: 'Creator Studio', icon: Rocket },
+    { to: '/user/home', label: 'Home', icon: Home, hasDot: true },
+    { to: '/user/explore', label: 'Explore', icon: Search },
+    { to: '/user/notifications', label: 'Notifications', icon: Bell },
+    { to: '/user/follow', label: 'Follow', icon: UserPlus },
+    { to: '/user/chat', label: 'Chat', icon: MessageCircle },
+    { to: '/user/bookmarks', label: 'Bookmarks', icon: Bookmark },
 ];
 
 const secondaryItems = [
-    { to: '/profile', label: 'Profile', icon: User },
-    { to: '/settings', label: 'Settings', icon: Settings },
+    { to: '/user/profile', label: 'Profile', icon: User },
+    { to: '/user/settings', label: 'Settings', icon: Settings },
 ];
 
 export function Sidebar() {
