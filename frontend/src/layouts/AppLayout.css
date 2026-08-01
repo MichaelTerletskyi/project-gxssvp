@@ -1,19 +1,19 @@
 .app-layout {
-    display: flex;
-    min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
 }
 
 .app-content {
-    margin-left: 30vw; 
-    width: 40vw;
-    flex-shrink: 0;
-    padding: var(--spacing-big) var(--spacing-medium);
-    box-sizing: border-box;
+  margin-left: 30vw;
+  width: 40vw;
+  flex-shrink: 0;
+  padding: var(--spacing-big) var(--spacing-medium);
+  box-sizing: border-box;
 }
 
 @media (max-width: 900px) {
-    .app-content {
-        margin-left: 220px;
-        width: calc(100vw - 220px);
-    }
+  .app-content {
+    margin-left: 220px;
+    width: calc(100vw - 220px);
+  }
 }
