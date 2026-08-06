@@ -10,12 +10,14 @@ COPY pom.xml .
 COPY security/pom.xml ./security/
 COPY identity/pom.xml ./identity/
 COPY application/pom.xml ./application/
+COPY messaging/pom.xml ./messaging/
 
 RUN mvn dependency:go-offline -B
 
 COPY security/src ./security/src
 COPY identity/src ./identity/src
 COPY application/src ./application/src
+COPY messaging/src ./messaging/src
 
 RUN mvn clean package -DskipTests
 

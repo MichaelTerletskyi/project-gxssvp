@@ -41,6 +41,7 @@
         <module>application</module>
         <module>identity</module>
         <module>security</module>
+        <module>messaging</module>
     </modules>
 
     <scm>
