@@ -41,6 +41,7 @@
         <module>application</module>
         <module>identity</module>
         <module>security</module>
+        <module>messaging</module>
     </modules>
 
     <scm>
@@ -86,10 +87,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.validation</groupId>
