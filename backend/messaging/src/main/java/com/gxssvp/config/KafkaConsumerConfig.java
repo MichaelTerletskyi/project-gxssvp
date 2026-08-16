@@ -40,10 +40,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, DomainEvent> consumerFactory() {
         final Map<String, Object> config = new HashMap<>();
-
-        log.info("Kafka host: {}", bootstrapServers);
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        log.info("Kafka id: {}", groupId);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
@@ -52,7 +49,6 @@ public class KafkaConsumerConfig {
         config.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "*");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
